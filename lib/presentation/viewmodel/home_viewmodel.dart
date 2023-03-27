@@ -9,6 +9,7 @@ import 'package:provider/provider.dart';
 class HomeViewModel extends ChangeNotifier {
   final CharacterEndpoint characterEndpoint;
   final ConnectivityServive _connectivityServive;
+  int _offset = 0;
 
   HomeViewModel._(this._connectivityServive, {required this.characterEndpoint});
 
@@ -28,10 +29,12 @@ class HomeViewModel extends ChangeNotifier {
 
   Future<List<Character>?> load() async {
     try {
-      final responseDto = await characterEndpoint.getCharacters();
+      final responseDto = await characterEndpoint.getCharacters(offset: _offset);
       final charactersJson = responseDto.data['results'] as List<dynamic>;
-      final characters = charactersJson.map((json) => Character.fromJson(json)).toList();
-    return characters;
+      final characters =
+          charactersJson.map((json) => Character.fromJson(json)).toList();
+      _offset = _offset + 20;
+      return characters;
     } catch (e) {
       rethrow;
     }

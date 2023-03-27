@@ -15,5 +15,7 @@ abstract class CharacterEndpoint {
   }
 
   @GET("/characters")
-  Future<ResponseDto> getCharacters();
+  Future<ResponseDto> getCharacters({
+    @Query("offset") int offset = 0,
+  });
 }

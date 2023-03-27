@@ -9,13 +9,15 @@ class HomeScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return HomeViewModel.buildWithProvider(
-      builder: (_, __) => const HomeContent(),
+      builder: (_, __) => HomeContent(),
     );
   }
 }
 
 class HomeContent extends StatelessWidget {
-  const HomeContent({
+  final ScrollController _scrollController = ScrollController();
+
+  HomeContent({
     super.key,
   });
 
@@ -25,32 +27,53 @@ class HomeContent extends StatelessWidget {
     return Scaffold(
       body: Consumer<HomeViewModel>(
         builder: (context, homeViewModel, child) {
-          return FutureBuilder<List<Character>?>(
-            future: homeViewModel.load(),
-            builder: (context, snapshot) {
-              if (snapshot.connectionState == ConnectionState.waiting) {
-                return const Center(
-                  child: CircularProgressIndicator(),
-                );
-              } else {
-                if (snapshot.hasError) {
-                  return Center(
-                    child: Text('Error: ${snapshot.error}'),
+          return NotificationListener<ScrollEndNotification>(
+            onNotification: (scrollEnd) {
+              if (scrollEnd.metrics.pixels ==
+                  scrollEnd.metrics.maxScrollExtent) {
+                homeViewModel.load();
+              }
+              return true;
+            },
+            child: FutureBuilder<List<Character>?>(
+              future: homeViewModel.load(),
+              builder: (context, snapshot) {
+                if (snapshot.connectionState == ConnectionState.waiting) {
+                  return const Center(
+                    child: CircularProgressIndicator(),
                   );
                 } else {
-                  final characters = snapshot.data!;
-                  return ListView.builder(
-                    itemCount: characters.length,
-                    itemBuilder: (context, index) {
-                      final character = characters[index];
-                      return ListTile(
-                        title: Text(character.name ?? "")
-                      );
-                    },
-                  );
+                  if (snapshot.hasError) {
+                    return Center(
+                      child: Text('Error: ${snapshot.error}'),
+                    );
+                  } else {
+                    final characters = snapshot.data!;
+                    return ListView.builder(
+                      itemCount: characters.length,
+                      itemBuilder: (context, index) {
+                        final character = characters[index];
+                        return Card(
+                          child: ListTile(
+                            leading: Image.network(
+                              '${character.thumbnail?.path}.${character.thumbnail?.extension}',
+                              height: 60,
+                              width: 60,
+                              errorBuilder: (context, error, stackTrace) =>
+                                  const Icon(Icons.no_photography),
+                            ),
+                            title: Text(character.name ?? ""),
+                            trailing:
+                                const Icon(Icons.arrow_forward_ios_rounded),
+                            onTap: () {},
+                          ),
+                        );
+                      },
+                    );
+                  }
                 }
-              }
-            },
+              },
+            ),
           );
         },
       ),

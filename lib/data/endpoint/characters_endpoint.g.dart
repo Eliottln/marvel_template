@@ -19,9 +19,9 @@ class _CharacterEndpoint implements CharacterEndpoint {
   String? baseUrl;
 
   @override
-  Future<ResponseDto> getCharacters() async {
+  Future<ResponseDto> getCharacters({offset = 0}) async {
     const _extra = <String, dynamic>{};
-    final queryParameters = <String, dynamic>{};
+    final queryParameters = <String, dynamic>{r'offset': offset};
     final _headers = <String, dynamic>{};
     final _data = <String, dynamic>{};
     final _result = await _dio
