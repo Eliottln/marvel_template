@@ -1,5 +1,7 @@
 import 'package:flutter/widgets.dart';
+import 'package:marvel_app/data/dto/response_dto.dart';
 import 'package:marvel_app/data/endpoint/characters_endpoint.dart';
+import 'package:marvel_app/data/model/character.dart';
 import 'package:marvel_app/infrastructure/injections/injector.dart';
 import 'package:marvel_app/infrastructure/services/connectivity_service.dart';
 import 'package:provider/provider.dart';
@@ -24,9 +26,12 @@ class HomeViewModel extends ChangeNotifier {
     );
   }
 
-  Future<void> load() async {
+  Future<List<Character>?> load() async {
     try {
-      /// Implement here
+      final responseDto = await characterEndpoint.getCharacters();
+      final charactersJson = responseDto.data['results'] as List<dynamic>;
+      final characters = charactersJson.map((json) => Character.fromJson(json)).toList();
+    return characters;
     } catch (e) {
       rethrow;
     }
