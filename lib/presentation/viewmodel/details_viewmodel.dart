@@ -8,7 +8,7 @@ import 'package:provider/provider.dart';
 import 'package:flutter/material.dart';
 import 'package:marvel_app/presentation/screen/details_screen.dart';
 
-class HomeViewModel extends ChangeNotifier {
+class DetailsViewModel extends ChangeNotifier {
   final CharacterEndpoint characterEndpoint;
   final ConnectivityServive _connectivityServive;
   ScrollController scrollController = ScrollController();
@@ -29,13 +29,13 @@ class HomeViewModel extends ChangeNotifier {
     });
   }
 
-  HomeViewModel._(this._connectivityServive, {required this.characterEndpoint});
+  DetailsViewModel._(this._connectivityServive, {required this.characterEndpoint});
 
-  static ChangeNotifierProvider<HomeViewModel> buildWithProvider(
+  static ChangeNotifierProvider<DetailsViewModel> buildWithProvider(
       {required Widget Function(BuildContext context, Widget? child)? builder,
       Widget? child}) {
-    return ChangeNotifierProvider<HomeViewModel>(
-      create: (BuildContext context) => HomeViewModel._(
+    return ChangeNotifierProvider<DetailsViewModel>(
+      create: (BuildContext context) => DetailsViewModel._(
         injector<ConnectivityServive>(),
         characterEndpoint: injector<CharacterEndpoint>(),
       )
@@ -63,14 +63,4 @@ class HomeViewModel extends ChangeNotifier {
     }
   }
 
-  void navigateToDetail(BuildContext context, int index) {
-    Navigator.push(
-      context,
-      MaterialPageRoute(
-        builder: (context) => DetailsScreen(
-          characterId: characterList[index].id!,
-        ),
-      ),
-    );
-  }
 }

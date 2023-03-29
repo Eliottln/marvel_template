@@ -51,7 +51,9 @@ class HomeContent extends StatelessWidget {
                       ),
                       title: Text(character.name ?? ""),
                       trailing: const Icon(Icons.arrow_forward_ios_rounded),
-                      onTap: () {},
+                      onTap: () {
+                        homeViewModel.navigateToDetail(context, index);
+                      },
                     ),
                   );
                 },
