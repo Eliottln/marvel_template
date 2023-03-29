@@ -9,8 +9,9 @@ class Character {
   String? name;
   String? resourceURI;
   Thumbnail? thumbnail;
+  String? description;
 
-  Character({this.id, this.name, this.resourceURI, this.thumbnail});
+  Character({this.id, this.name, this.resourceURI, this.thumbnail, this.description});
 
   factory Character.fromJson(Map<String, dynamic> json) =>
       _$CharacterFromJson(json);

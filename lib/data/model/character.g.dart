@@ -13,6 +13,7 @@ Character _$CharacterFromJson(Map<String, dynamic> json) => Character(
       thumbnail: json['thumbnail'] == null
           ? null
           : Thumbnail.fromJson(json['thumbnail'] as Map<String, dynamic>),
+      description: json['description'] as String?,
     );
 
 Map<String, dynamic> _$CharacterToJson(Character instance) => <String, dynamic>{
@@ -20,4 +21,5 @@ Map<String, dynamic> _$CharacterToJson(Character instance) => <String, dynamic>{
       'name': instance.name,
       'resourceURI': instance.resourceURI,
       'thumbnail': instance.thumbnail?.toJson(),
+      'description': instance.description,
     };

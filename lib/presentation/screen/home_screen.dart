@@ -22,6 +22,9 @@ class HomeContent extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      appBar: AppBar(
+        title: const Text('Characters')
+      ),
       body: Consumer<HomeViewModel>(builder: (context, homeViewModel, child) {
         return SingleChildScrollView(
           controller: homeViewModel.scrollController,

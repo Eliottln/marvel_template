@@ -10,8 +10,8 @@ class DetailsScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return DetailsViewModel.buildWithProvider(
-      builder: (_, __) => DetailsContent(characterId: characterId),
-    );
+        builder: (_, __) => DetailsContent(characterId: characterId),
+        characterId: characterId);
   }
 }
 
@@ -22,15 +22,46 @@ class DetailsContent extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      appBar: AppBar(title: const Text('Informations')),
       body: Consumer<DetailsViewModel>(
-          builder: (context, detailsViewModel, child) {
-        return SingleChildScrollView(
-          controller: detailsViewModel.scrollController,
-          child: Column(
-            children: [],
-          ),
-        );
-      }),
+        builder: (context, detailsViewModel, child) {
+          return SafeArea(
+            child: Container(
+              margin: const EdgeInsets.all(16),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Align(
+                    alignment: Alignment.topCenter,
+                    child: Image.network(
+                      "${detailsViewModel.character.thumbnail?.path}.${detailsViewModel.character.thumbnail?.extension}",
+                      height: 200,
+                      errorBuilder: (context, error, stackTrace) =>
+                          const Icon(Icons.no_photography),
+                    ),
+                  ),
+                  Center(
+                    child: Text(
+                      detailsViewModel.character.name ?? "",
+                      style: const TextStyle(
+                          fontWeight: FontWeight.bold, fontSize: 36),
+                      textAlign: TextAlign.center,
+                    ),
+                  ),
+                  const Text(
+                    "Description",
+                    style: TextStyle(fontWeight: FontWeight.bold),
+                  ),
+                  Text(
+                    detailsViewModel.character.description ?? "",
+                    textAlign: TextAlign.justify,
+                  ),
+                ],
+              ),
+            ),
+          );
+        },
+      ),
     );
   }
 }

@@ -11,36 +11,23 @@ import 'package:marvel_app/presentation/screen/details_screen.dart';
 class DetailsViewModel extends ChangeNotifier {
   final CharacterEndpoint characterEndpoint;
   final ConnectivityServive _connectivityServive;
-  ScrollController scrollController = ScrollController();
   bool isLoading = true;
-  List<Character> characterList = [];
-  int _offset = 0;
+  int id = 0;
+  Character character = Character();
 
-  void initScroll() {
-    scrollController.addListener(() {
-      if (scrollController.offset >=
-          (scrollController.position.maxScrollExtent * 0.9)) {
-        if (!isLoading) {
-          isLoading = !isLoading;
-          notifyListeners();
-          load();
-        }
-      }
-    });
-  }
-
-  DetailsViewModel._(this._connectivityServive, {required this.characterEndpoint});
+  DetailsViewModel._(this._connectivityServive,
+      {required this.characterEndpoint, required this.id});
 
   static ChangeNotifierProvider<DetailsViewModel> buildWithProvider(
       {required Widget Function(BuildContext context, Widget? child)? builder,
-      Widget? child}) {
+      Widget? child,
+      required int characterId}) {
     return ChangeNotifierProvider<DetailsViewModel>(
       create: (BuildContext context) => DetailsViewModel._(
         injector<ConnectivityServive>(),
         characterEndpoint: injector<CharacterEndpoint>(),
-      )
-        ..load()
-        ..initScroll(),
+        id: characterId,
+      )..load(),
       builder: builder,
       lazy: false,
       child: child,
@@ -49,18 +36,13 @@ class DetailsViewModel extends ChangeNotifier {
 
   Future<void> load() async {
     try {
-      final responseDto =
-          await characterEndpoint.getCharacters(offset: _offset);
+      final responseDto = await characterEndpoint.getCharacterById(id);
       final charactersJson = responseDto.data['results'] as List<dynamic>;
-      final characters =
-          charactersJson.map((json) => Character.fromJson(json)).toList();
-      _offset = _offset + 20;
-      characterList.addAll(characters);
+      character = charactersJson.map((json) => Character.fromJson(json)).first;
       isLoading = !isLoading;
       notifyListeners();
     } catch (e) {
       rethrow;
     }
   }
-
 }
