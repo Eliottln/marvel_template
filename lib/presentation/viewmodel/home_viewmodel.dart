@@ -9,7 +9,24 @@ import 'package:provider/provider.dart';
 class HomeViewModel extends ChangeNotifier {
   final CharacterEndpoint characterEndpoint;
   final ConnectivityServive _connectivityServive;
+  ScrollController scrollController = ScrollController();
+  bool isLoading = true;
+  List<Character> characterList = [];
+
   int _offset = 0;
+
+  void initScroll() {
+    scrollController.addListener(() {
+      if (scrollController.offset >=
+          (scrollController.position.maxScrollExtent * 0.9)) {
+        if (!isLoading) {
+          isLoading = !isLoading;
+          notifyListeners();
+          load();
+        }
+      }
+    });
+  }
 
   HomeViewModel._(this._connectivityServive, {required this.characterEndpoint});
 
@@ -20,21 +37,26 @@ class HomeViewModel extends ChangeNotifier {
       create: (BuildContext context) => HomeViewModel._(
         injector<ConnectivityServive>(),
         characterEndpoint: injector<CharacterEndpoint>(),
-      )..load(),
+      )
+        ..load()
+        ..initScroll(),
       builder: builder,
       lazy: false,
       child: child,
     );
   }
 
-  Future<List<Character>?> load() async {
+  Future<void> load() async {
     try {
-      final responseDto = await characterEndpoint.getCharacters(offset: _offset);
+      final responseDto =
+          await characterEndpoint.getCharacters(offset: _offset);
       final charactersJson = responseDto.data['results'] as List<dynamic>;
       final characters =
           charactersJson.map((json) => Character.fromJson(json)).toList();
       _offset = _offset + 20;
-      return characters;
+      characterList.addAll(characters);
+      isLoading = !isLoading;
+      notifyListeners();
     } catch (e) {
       rethrow;
     }
