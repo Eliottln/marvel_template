@@ -21,4 +21,7 @@ abstract class CharacterEndpoint {
 
   @GET("/characters/{id}")
   Future<ResponseDto> getCharacterById(@Path("id") int id,);
+
+    @GET("/characters/{id}/comics")
+  Future<ResponseDto> getCharacterComics(@Path("id") int id,);
 }

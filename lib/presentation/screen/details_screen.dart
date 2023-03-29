@@ -28,35 +28,73 @@ class DetailsContent extends StatelessWidget {
           return SafeArea(
             child: Container(
               margin: const EdgeInsets.all(16),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Align(
-                    alignment: Alignment.topCenter,
-                    child: Image.network(
-                      "${detailsViewModel.character.thumbnail?.path}.${detailsViewModel.character.thumbnail?.extension}",
-                      height: 200,
-                      errorBuilder: (context, error, stackTrace) =>
-                          const Icon(Icons.no_photography),
+              child: SingleChildScrollView(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Align(
+                      alignment: Alignment.topCenter,
+                      child: Image.network(
+                        "${detailsViewModel.character.thumbnail?.path}.${detailsViewModel.character.thumbnail?.extension}",
+                        height: 200,
+                        errorBuilder: (context, error, stackTrace) =>
+                            const Icon(Icons.no_photography),
+                      ),
                     ),
-                  ),
-                  Center(
-                    child: Text(
-                      detailsViewModel.character.name ?? "",
-                      style: const TextStyle(
-                          fontWeight: FontWeight.bold, fontSize: 36),
-                      textAlign: TextAlign.center,
+                    Center(
+                      child: Text(
+                        detailsViewModel.character.name ?? "",
+                        style: const TextStyle(
+                            fontWeight: FontWeight.bold, fontSize: 36),
+                        textAlign: TextAlign.center,
+                      ),
                     ),
-                  ),
-                  const Text(
-                    "Description",
-                    style: TextStyle(fontWeight: FontWeight.bold),
-                  ),
-                  Text(
-                    detailsViewModel.character.description ?? "",
-                    textAlign: TextAlign.justify,
-                  ),
-                ],
+                    const Text(
+                      "Description",
+                      style: TextStyle(fontWeight: FontWeight.bold),
+                    ),
+                    Text(
+                      detailsViewModel.character.description ?? "",
+                      textAlign: TextAlign.justify,
+                    ),
+                    ExpansionTile(
+                      title: Text("Comics"),
+                      children: <Widget>[
+                        SizedBox(
+                          height: 200,
+                          child: ListView.builder(
+                            scrollDirection: Axis.horizontal,
+                            itemCount: detailsViewModel.comics.length,
+                            itemBuilder: (context, index) {
+                              if (index == detailsViewModel.comics.length) {
+                                return const Center(
+                                  child: CircularProgressIndicator(),
+                                );
+                              }
+                              final comics = detailsViewModel.comics[index];
+                              return SizedBox(
+                                width: 200,
+                                child: Card(
+                                  child: ListTile(
+                                    leading: Image.network(
+                                      '${comics.thumbnail?.path}.${comics.thumbnail?.extension}',
+                                      height: 90,
+                                      width: 90,
+                                      errorBuilder:
+                                          (context, error, stackTrace) =>
+                                              const Icon(Icons.no_photography),
+                                    ),
+                                    title: Text(comics.title ?? ""),
+                                  ),
+                                ),
+                              );
+                            },
+                          ),
+                        ),
+                      ],
+                    ),
+                  ],
+                ),
               ),
             ),
           );
