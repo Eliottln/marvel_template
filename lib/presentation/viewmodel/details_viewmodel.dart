@@ -8,6 +8,7 @@ import 'package:marvel_app/infrastructure/services/connectivity_service.dart';
 import 'package:provider/provider.dart';
 import 'package:flutter/material.dart';
 import 'package:marvel_app/presentation/screen/details_screen.dart';
+import 'package:hive/hive.dart';
 
 class DetailsViewModel extends ChangeNotifier {
   final CharacterEndpoint characterEndpoint;
@@ -63,4 +64,11 @@ class DetailsViewModel extends ChangeNotifier {
       rethrow;
     }
   }
+
+  void setFavorite() async {
+    var box = await Hive.openBox('favorites');
+    box.add(character);
+  }
+
+
 }
