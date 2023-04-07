@@ -58,10 +58,10 @@ class DetailsContent extends StatelessWidget {
                       textAlign: TextAlign.justify,
                     ),
                     ExpansionTile(
-                      title: Text("Comics"),
-                      children: <Widget>[
+                      title: const Text("Comics"),
+                      children: [
                         SizedBox(
-                          height: 200,
+                          height: 150,
                           child: ListView.builder(
                             scrollDirection: Axis.horizontal,
                             itemCount: detailsViewModel.comics.length,
@@ -75,16 +75,21 @@ class DetailsContent extends StatelessWidget {
                               return SizedBox(
                                 width: 200,
                                 child: Card(
-                                  child: ListTile(
-                                    leading: Image.network(
-                                      '${comics.thumbnail?.path}.${comics.thumbnail?.extension}',
-                                      height: 90,
-                                      width: 90,
-                                      errorBuilder:
-                                          (context, error, stackTrace) =>
-                                              const Icon(Icons.no_photography),
-                                    ),
-                                    title: Text(comics.title ?? ""),
+                                  child: Column(
+                                    children: [
+                                      Image.network(
+                                        '${comics.thumbnail?.path}.${comics.thumbnail?.extension}',
+                                        height: 90,
+                                        width: 90,
+                                        errorBuilder: (context, error,
+                                                stackTrace) =>
+                                            const Icon(Icons.no_photography),
+                                      ),
+                                      Text(
+                                        comics.title ?? "",
+                                        textAlign: TextAlign.center,
+                                      ),
+                                    ],
                                   ),
                                 ),
                               );
